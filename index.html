@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ride With Pulse | Motovlogger</title>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Light GSAP (NO ScrollTrigger) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #000;
+  color: #fff;
+}
+
+.italic-black {
+  font-style: italic;
+  font-weight: 900;
+}
+
+.gs-hero {
+  min-height: 520px;
+  background:
+    linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.9)),
+    url("https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?q=80&w=2070&auto=format&fit=crop");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+
+.gs-wrap {
+  max-width: 1100px;
+  margin: auto;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<section class="gs-hero">
+  <div class="gs-wrap">
+    <span class="inline-block px-4 py-1 mb-6 border border-red-600 text-red-600 text-xs font-bold tracking-[0.3em] uppercase rounded-full reveal">
+      New Episode Out Now
+    </span>
+
+    <h1 class="text-5xl md:text-7xl italic-black tracking-tighter mb-6 reveal">
+      BEYOND THE<br>
+      <span class="text-red-600">REDLINE.</span>
+    </h1>
+
+    <p class="max-w-xl mx-auto text-zinc-400 mb-10 reveal">
+      Documenting life on two wheels. From canyon twisties to the urban jungle.
+    </p>
+
+    <div class="flex flex-col md:flex-row gap-4 justify-center reveal">
+      <a href="#" class="bg-red-600 hover:bg-red-700 px-10 py-4 font-bold uppercase">
+        Watch Latest
+      </a>
+      <a href="#" class="border border-white/30 hover:border-white px-10 py-4 font-bold uppercase">
+        The Garage
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="py-20 bg-zinc-950">
+  <div class="max-w-1100 mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="bg-zinc-900 p-8 rounded-xl">
+      <div class="text-4xl italic-black">240K+</div>
+      <div class="text-xs tracking-widest uppercase text-zinc-500">Subscribers</div>
+    </div>
+    <div class="bg-zinc-900 p-8 rounded-xl">
+      <div class="text-4xl italic-black">45,000</div>
+      <div class="text-xs tracking-widest uppercase text-zinc-500">Miles</div>
+    </div>
+    <div class="bg-zinc-900 p-8 rounded-xl">
+      <div class="text-4xl italic-black">186 MPH</div>
+      <div class="text-xs tracking-widest uppercase text-zinc-500">Top Speed</div>
+    </div>
+    <div class="bg-zinc-900 p-8 rounded-xl">
+      <div class="text-4xl italic-black">12</div>
+      <div class="text-xs tracking-widest uppercase text-zinc-500">Countries</div>
+    </div>
+  </div>
+</section>
+
+<!-- BIKE -->
+<section class="py-24 bg-black">
+  <div class="max-w-1100 mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <h2 class="text-5xl italic-black mb-6">
+        BMW S1000RR<br>
+        <span class="text-zinc-600">THE SHADOW</span>
+      </h2>
+      <ul class="space-y-4 text-zinc-400">
+        <li><strong>Engine:</strong> 998cc Inline-4</li>
+        <li><strong>Power:</strong> 200 HP</li>
+        <li><strong>Torque:</strong> 112 Nm</li>
+        <li><strong>Exhaust:</strong> Akrapovič</li>
+      </ul>
+    </div>
+    <img
+      src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2000&auto=format&fit=crop"
+      class="rounded-xl grayscale hover:grayscale-0 transition duration-700"
+      alt="Bike">
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-24 bg-zinc-950 text-center">
+  <h2 class="text-4xl md:text-6xl italic-black mb-6">JOIN THE TRIBE</h2>
+  <p class="text-zinc-400 mb-10">Early access to routes & raw footage</p>
+  <a href="#" class="bg-white text-black px-12 py-5 font-black uppercase hover:bg-red-600 hover:text-white">
+    Subscribe
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-black py-10 text-center text-zinc-600 text-xs tracking-widest uppercase">
+  © 2024 Ride Pulse Motorsports
+</footer>
+
+<script>
+lucide.createIcons();
+gsap.to(".reveal", {
+  opacity: 1,
+  y: 0,
+  duration: 1,
+  stagger: 0.2,
+  ease: "power3.out"
+});
+</script>
+
+</body>
+</html>
