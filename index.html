@@ -1,156 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ride With Pulse | Motovlogger</title>
-
-<!-- Tailwind -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
-<!-- Light GSAP (NO ScrollTrigger) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: #000;
-  color: #fff;
-}
-
-.italic-black {
-  font-style: italic;
-  font-weight: 900;
-}
-
-.gs-hero {
-  min-height: 520px;
-  background:
-    linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.9)),
-    url("https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?q=80&w=2070&auto=format&fit=crop");
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-}
-
-.gs-wrap {
-  max-width: 1100px;
-  margin: auto;
-  padding: 80px 20px;
-  text-align: center;
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride With Pulse | Motovlogger</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        .italic-black {
+            font-style: italic;
+            font-weight: 900;
+        }
+        .text-neon-red {
+            color: #ef4444;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+        .nav-blur {
+            backdrop-filter: blur(12px);
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ef4444;
+            border-radius: 10px;
+        }
+        .reveal, .reveal-left, .reveal-right, .stat-card, .video-card {
+            visibility: hidden; /* Prevent flash of unstyled content before GSAP kicks in */
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- HERO -->
-<section class="gs-hero">
-  <div class="gs-wrap">
-    <span class="inline-block px-4 py-1 mb-6 border border-red-600 text-red-600 text-xs font-bold tracking-[0.3em] uppercase rounded-full reveal">
-      New Episode Out Now
-    </span>
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-6">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="text-2xl italic-black tracking-tighter text-red-600">
+                RIDE<span class="text-white">PULSE</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-sm font-bold uppercase tracking-widest hover:text-red-600 transition-colors">Home</a>
+                <a href="#videos" class="text-sm font-bold uppercase tracking-widest hover:text-red-600 transition-colors">Videos</a>
+                <a href="#bike" class="text-sm font-bold uppercase tracking-widest hover:text-red-600 transition-colors">The Bike</a>
+                <a href="#contact" class="text-sm font-bold uppercase tracking-widest hover:text-red-600 transition-colors">Contact</a>
+            </div>
+            <button class="md:hidden" id="mobile-menu-btn">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </nav>
 
-    <h1 class="text-5xl md:text-7xl italic-black tracking-tighter mb-6 reveal">
-      BEYOND THE<br>
-      <span class="text-red-600">REDLINE.</span>
-    </h1>
-
-    <p class="max-w-xl mx-auto text-zinc-400 mb-10 reveal">
-      Documenting life on two wheels. From canyon twisties to the urban jungle.
-    </p>
-
-    <div class="flex flex-col md:flex-row gap-4 justify-center reveal">
-      <a href="#" class="bg-red-600 hover:bg-red-700 px-10 py-4 font-bold uppercase">
-        Watch Latest
-      </a>
-      <a href="#" class="border border-white/30 hover:border-white px-10 py-4 font-bold uppercase">
-        The Garage
-      </a>
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-zinc-950 flex flex-col p-10 space-y-6 hidden translate-y-[-100%] transition-transform duration-500">
+        <div class="flex justify-end">
+            <button id="close-menu-btn"><i data-lucide="x"></i></button>
+        </div>
+        <a href="#home" class="mobile-link text-3xl font-black uppercase italic">Home</a>
+        <a href="#videos" class="mobile-link text-3xl font-black uppercase italic">Videos</a>
+        <a href="#bike" class="mobile-link text-3xl font-black uppercase italic">The Bike</a>
+        <a href="#contact" class="mobile-link text-3xl font-black uppercase italic">Contact</a>
     </div>
-  </div>
-</section>
 
-<!-- STATS -->
-<section class="py-20 bg-zinc-950">
-  <div class="max-w-1100 mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-    <div class="bg-zinc-900 p-8 rounded-xl">
-      <div class="text-4xl italic-black">240K+</div>
-      <div class="text-xs tracking-widest uppercase text-zinc-500">Subscribers</div>
-    </div>
-    <div class="bg-zinc-900 p-8 rounded-xl">
-      <div class="text-4xl italic-black">45,000</div>
-      <div class="text-xs tracking-widest uppercase text-zinc-500">Miles</div>
-    </div>
-    <div class="bg-zinc-900 p-8 rounded-xl">
-      <div class="text-4xl italic-black">186 MPH</div>
-      <div class="text-xs tracking-widest uppercase text-zinc-500">Top Speed</div>
-    </div>
-    <div class="bg-zinc-900 p-8 rounded-xl">
-      <div class="text-4xl italic-black">12</div>
-      <div class="text-xs tracking-widest uppercase text-zinc-500">Countries</div>
-    </div>
-  </div>
-</section>
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div id="hero-bg" class="absolute inset-0 z-0 opacity-50 scale-110">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black z-10"></div>
+            <img src="https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?q=80&w=2070&auto=format&fit=crop" 
+                 class="w-full h-full object-cover grayscale" alt="Biker Hero">
+        </div>
 
-<!-- BIKE -->
-<section class="py-24 bg-black">
-  <div class="max-w-1100 mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-    <div>
-      <h2 class="text-5xl italic-black mb-6">
-        BMW S1000RR<br>
-        <span class="text-zinc-600">THE SHADOW</span>
-      </h2>
-      <ul class="space-y-4 text-zinc-400">
-        <li><strong>Engine:</strong> 998cc Inline-4</li>
-        <li><strong>Power:</strong> 200 HP</li>
-        <li><strong>Torque:</strong> 112 Nm</li>
-        <li><strong>Exhaust:</strong> Akrapovič</li>
-      </ul>
-    </div>
-    <img
-      src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2000&auto=format&fit=crop"
-      class="rounded-xl grayscale hover:grayscale-0 transition duration-700"
-      alt="Bike">
-  </div>
-</section>
+        <div class="relative z-20 text-center px-6">
+            <span class="inline-block px-4 py-1 mb-4 border border-red-600 text-red-600 text-xs font-bold tracking-[0.3em] uppercase rounded-full reveal">
+                New Episode Out Now
+            </span>
+            <h1 class="text-6xl md:text-9xl italic-black tracking-tighter mb-6 leading-none reveal">
+                BEYOND THE <br />
+                <span class="text-red-600">REDLINE.</span>
+            </h1>
+            <p class="max-w-xl mx-auto text-zinc-400 text-lg mb-8 reveal">
+                Documenting life on two wheels. From the canyon twisties to the urban jungle, we chase the limit.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center reveal">
+                <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-10 rounded-sm transition-all flex items-center justify-center gap-2">
+                    WATCH LATEST <i data-lucide="play" class="fill-current w-4 h-4"></i>
+                </button>
+                <button class="border border-white/20 hover:border-white text-white font-bold py-4 px-10 rounded-sm transition-all flex items-center justify-center gap-2">
+                    THE GARAGE <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
 
-<!-- CTA -->
-<section class="py-24 bg-zinc-950 text-center">
-  <h2 class="text-4xl md:text-6xl italic-black mb-6">JOIN THE TRIBE</h2>
-  <p class="text-zinc-400 mb-10">Early access to routes & raw footage</p>
-  <a href="#" class="bg-white text-black px-12 py-5 font-black uppercase hover:bg-red-600 hover:text-white">
-    Subscribe
-  </a>
-</section>
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/30 animate-bounce">
+            <i data-lucide="chevron-down" class="w-8 h-8"></i>
+        </div>
+    </section>
 
-<!-- FOOTER -->
-<footer class="bg-black py-10 text-center text-zinc-600 text-xs tracking-widest uppercase">
-  © 2024 Ride Pulse Motorsports
-</footer>
+    <!-- Stats Section -->
+    <section class="py-20 bg-zinc-950">
+        <div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="stat-card text-center p-8 bg-zinc-900 rounded-2xl border border-white/5">
+                <i data-lucide="youtube" class="mx-auto mb-4 text-red-600"></i>
+                <div class="text-3xl md:text-4xl italic-black mb-1">240K+</div>
+                <div class="text-zinc-500 text-xs uppercase font-bold tracking-widest">Subscribers</div>
+            </div>
+            <div class="stat-card text-center p-8 bg-zinc-900 rounded-2xl border border-white/5">
+                <i data-lucide="map-pin" class="mx-auto mb-4 text-red-600"></i>
+                <div class="text-3xl md:text-4xl italic-black mb-1">45,000</div>
+                <div class="text-zinc-500 text-xs uppercase font-bold tracking-widest">Miles</div>
+            </div>
+            <div class="stat-card text-center p-8 bg-zinc-900 rounded-2xl border border-white/5">
+                <i data-lucide="zap" class="mx-auto mb-4 text-red-600"></i>
+                <div class="text-3xl md:text-4xl italic-black mb-1">186 MPH</div>
+                <div class="text-zinc-500 text-xs uppercase font-bold tracking-widest">Top Speed</div>
+            </div>
+            <div class="stat-card text-center p-8 bg-zinc-900 rounded-2xl border border-white/5">
+                <i data-lucide="user" class="mx-auto mb-4 text-red-600"></i>
+                <div class="text-3xl md:text-4xl italic-black mb-1">12</div>
+                <div class="text-zinc-500 text-xs uppercase font-bold tracking-widest">Countries</div>
+            </div>
+        </div>
+    </section>
 
-<script>
-lucide.createIcons();
-gsap.to(".reveal", {
-  opacity: 1,
-  y: 0,
-  duration: 1,
-  stagger: 0.2,
-  ease: "power3.out"
-});
-</script>
+    <!-- Video Grid -->
+    <section id="videos" class="py-24 bg-zinc-950">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <span class="text-red-600 font-bold uppercase tracking-[0.4em] text-xs">Latest Content</span>
+                    <h2 class="text-5xl italic-black tracking-tighter mt-4">RECENT RIDES</h2>
+                </div>
+                <a href="#" class="text-zinc-500 font-bold uppercase tracking-widest text-xs hover:text-white transition-colors flex items-center gap-2">
+                    VISIT CHANNEL <i data-lucide="external-link" class="w-4 h-4"></i>
+                </a>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="video-grid">
+                <!-- Cards injected via JS -->
+            </div>
+        </div>
+    </section>
 
+    <!-- Bike Specs -->
+    <section id="bike" class="py-24 bg-black overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2 reveal-left">
+                    <span class="text-red-600 font-bold uppercase tracking-[0.4em] text-xs">The Machine</span>
+                    <h2 class="text-5xl md:text-7xl italic-black tracking-tighter mt-4 mb-8">BMW S1000RR <br /><span class="text-zinc-700">'THE SHADOW'</span></h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12" id="spec-grid">
+                        <!-- Specs injected via JS -->
+                    </div>
+                </div>
+                <div class="lg:w-1/2 relative reveal-right">
+                    <div class="absolute -inset-10 bg-red-600/20 blur-[120px] rounded-full"></div>
+                    <!-- Updated Image with Fallback -->
+                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2000&auto=format&fit=crop" 
+                         onerror="this.src='https://images.unsplash.com/photo-1558981403-c5f9109ad086?q=80&w=2070&auto=format&fit=crop'"
+                         class="relative z-10 w-full rounded-2xl grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl" alt="The Bike">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-zinc-950 border-y border-white/5">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-6xl italic-black mb-8">JOIN THE TRIBE</h2>
+            <p class="text-zinc-400 mb-10 max-w-lg mx-auto uppercase tracking-widest font-bold text-sm">Get early access to route maps and raw track footage.</p>
+            <button class="bg-white text-black font-black px-12 py-5 uppercase italic tracking-tighter hover:bg-red-600 hover:text-white transition-all transform hover:-rotate-1">
+                Subscribe on Patreon
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-black pt-20 pb-10">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-12 mb-20">
+                <div>
+                    <div class="text-2xl italic-black tracking-tighter text-red-600 mb-6">RIDE<span class="text-white">PULSE</span></div>
+                    <p class="text-zinc-500 max-w-xs text-sm">Pushing limits and capturing the essence of the road. Ride safe, ride fast.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold uppercase tracking-widest mb-6 text-zinc-400">Connect</h4>
+                    <div class="flex gap-4">
+                        <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all cursor-pointer"><i data-lucide="youtube"></i></div>
+                        <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all cursor-pointer"><i data-lucide="instagram"></i></div>
+                        <div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all cursor-pointer"><i data-lucide="twitter"></i></div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold uppercase tracking-widest mb-6 text-zinc-400">Newsletter</h4>
+                    <div class="flex gap-2">
+                        <input type="email" placeholder="EMAIL ADDRESS" class="bg-zinc-900 border border-white/10 px-4 py-3 rounded-sm flex-grow text-xs focus:outline-none focus:border-red-600">
+                        <button class="bg-red-600 px-6 py-3 font-bold text-xs uppercase tracking-widest rounded-sm">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-zinc-700 text-[10px] font-bold uppercase tracking-[0.4em]">
+                &copy; 2024 RIDE PULSE MOTORSPORTS. NO SPEED LIMITS.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const closeBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        let menuOpen = false;
+
+        const toggleMenu = () => {
+            menuOpen = !menuOpen;
+            if(menuOpen) {
+                mobileMenu.classList.remove('hidden');
+                gsap.to(mobileMenu, { translateY: 0, duration: 0.5, ease: "power4.out" });
+            } else {
+                gsap.to(mobileMenu, { translateY: '-100%', duration: 0.5, ease: "power4.in", onComplete: () => mobileMenu.classList.add('hidden') });
+            }
+        };
+
+        menuBtn.addEventListener('click', toggleMenu);
+        closeBtn.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+        // Sticky Navbar
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('nav-blur', 'py-4');
+                nav.classList.remove('py-6');
+            } else {
+                nav.classList.remove('nav-blur', 'py-4');
+                nav.classList.add('py-6');
+            }
+        });
+
+        // Inject Videos with Updated, Reliable Images
+        const videos = [
+            { title: "Touching 200MPH on the Autobahn", views: "1.2M", date: "2 days ago", image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?q=80&w=1000&auto=format&fit=crop" },
+            { title: "Exploring Abandoned Alpine Tunnels", views: "850K", date: "1 week ago", image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1000&auto=format&fit=crop" },
+            { title: "The Best Motorcycle Roads in Wales", views: "430K", date: "2 weeks ago", image: "https://images.unsplash.com/photo-1505245057366-069a19c5c99c?q=80&w=1000&auto=format&fit=crop" },
+            { title: "Night Run Through Neo-Tokyo", views: "2.1M", date: "1 month ago", image: "https://images.unsplash.com/photo-1625043484555-47841a752840?q=80&w=1000&auto=format&fit=crop" },
+        ];
+
+        const videoGrid = document.getElementById('video-grid');
+        videos.forEach(vid => {
+            const card = document.createElement('div');
+            card.className = "video-card group bg-zinc-900 overflow-hidden rounded-xl border border-white/5 hover:border-red-600/50 transition-all duration-300";
+            card.style.visibility = "hidden"; // Hidden for GSAP
+            // Added onerror handler to fallback to a placeholder if the image fails
+            card.innerHTML = `
+                <div class="aspect-video relative overflow-hidden">
+                    <img src="${vid.image}" 
+                         onerror="this.src='https://images.unsplash.com/photo-1558981806-ec527fa84c39?q=80&w=800&auto=format&fit=crop'"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                         alt="${vid.title}">
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent flex items-center justify-center">
+                        <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all duration-300">
+                             <i data-lucide="play" class="fill-white w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold text-lg leading-tight group-hover:text-red-500 transition-colors mb-2">${vid.title}</h3>
+                    <div class="flex gap-4 text-[10px] text-zinc-500 uppercase font-bold tracking-widest">
+                        <span>${vid.views} Views</span>
+                        <span>${vid.date}</span>
+                    </div>
+                </div>
+            `;
+            videoGrid.appendChild(card);
+        });
+
+        // Inject Specs
+        const specs = [
+            { label: "Engine", value: "998cc Inline-4" },
+            { label: "Power", value: "200 HP @ 13,000 RPM" },
+            { label: "Torque", value: "112 Nm" },
+            { label: "Exhaust", value: "Full Akrapovič System" }
+        ];
+        const specGrid = document.getElementById('spec-grid');
+        specs.forEach(s => {
+            const div = document.createElement('div');
+            div.className = "border-b border-white/10 pb-4";
+            div.innerHTML = `<div class="text-zinc-500 text-[10px] font-bold uppercase mb-1">${s.label}</div><div class="text-xl italic-black tracking-tight">${s.value}</div>`;
+            specGrid.appendChild(div);
+        });
+
+        // RE-INITIALIZE ICONS AFTER INJECTION
+        lucide.createIcons();
+
+        // GSAP Animations
+        window.addEventListener('load', () => {
+            // Hero Reveal
+            gsap.set(".reveal", { autoAlpha: 0, y: 30 });
+            gsap.to(".reveal", {
+                autoAlpha: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+
+            // Parallax Hero
+            gsap.to("#hero-bg", {
+                yPercent: 20,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#home",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+
+            // Stats Reveal
+            gsap.set(".stat-card", { autoAlpha: 0, scale: 0.8 });
+            gsap.to(".stat-card", {
+                autoAlpha: 1,
+                scale: 1,
+                duration: 1,
+                stagger: 0.1,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                    trigger: ".stat-card",
+                    start: "top 85%"
+                }
+            });
+
+            // Video Cards Reveal
+            gsap.set(".video-card", { autoAlpha: 0, y: 50 });
+            gsap.to(".video-card", {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                scrollTrigger: {
+                    trigger: "#videos",
+                    start: "top 75%"
+                }
+            });
+
+            // Bike Section Reveals
+            gsap.set(".reveal-left", { autoAlpha: 0, x: -100 });
+            gsap.to(".reveal-left", {
+                autoAlpha: 1,
+                x: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: "#bike",
+                    start: "top 70%"
+                }
+            });
+
+            gsap.set(".reveal-right", { autoAlpha: 0, x: 100 });
+            gsap.to(".reveal-right", {
+                autoAlpha: 1,
+                x: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: "#bike",
+                    start: "top 70%"
+                }
+            });
+            
+            // Refresh ScrollTrigger to ensure dynamic content is accounted for
+            ScrollTrigger.refresh();
+        });
+
+    </script>
 </body>
 </html>
